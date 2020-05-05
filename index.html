@@ -1,0 +1,276 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Zeme Fest</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<link rel="manifest" href="site.webmanifest">
+	<link rel="apple-touch-icon" href="icon.png">
+	<!-- Place favicon.ico in the root directory -->
+	
+	<link rel="stylesheet" href="css/normalize.css">
+	<link rel="stylesheet" href="css/main.css">
+	
+	<meta name="theme-color" content="#fafafa">
+</head>
+
+<body>
+<!--[if IE]>
+<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade
+	your browser</a> to view this website correctly.</p>
+<![endif]-->
+
+<!-- Add your site or application content here -->
+<div class="base">
+	<div class="background-image"></div>
+	<div class="content">
+		<div class="title">
+			<h1>Zeme Fest Lineup</h1>
+		</div>
+		<div class="header">
+			<div class="half">
+				<u>Current UTC time:</u> <span id="utc-time">n/a</span>
+			</div>
+			<div class="half">
+				<u>Current local time:</u> <span id="local-time">n/a</span>
+			</div>
+		</div>
+		<div class="scrolling-portion">
+			<div class="arrow left" onclick="changeScroller(-1)">
+				<svg viewBox="0 0 24 24">
+					<path fill="currentColor"
+						  d="M18.41,7.41L17,6L11,12L17,18L18.41,16.59L13.83,12L18.41,7.41M12.41,7.41L11,6L5,12L11,18L12.41,16.59L7.83,12L12.41,7.41Z"/>
+				</svg>
+			</div>
+			<div class="scrolling-container">
+				<div class="scroller-relative">
+					<div class="scroller">
+						<div class="title">
+						<span class="streamer-name-socials">
+							<span class="streamer-name">n/a</span>
+						</span>
+							<div class="streamer-times">
+							<span>
+								<span class="streamer-time-utc">n/a</span> <i>UTC</i>
+							</span>
+								<span>
+								<span class="streamer-time-local">n/a</span> <i>local</i>
+							</span>
+							</div>
+						</div>
+						<div class="twitch-viewer">
+							<div id="twitch-embed"></div>
+							<div class="ttl-container">
+								<div class="ttl-centered"><u>LIVE:</u><br><span class="ttl">N/A</span></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="arrow right" onclick="changeScroller(1)">
+				<svg viewBox="0 0 24 24">
+					<path fill="currentColor"
+						  d="M5.59,7.41L7,6L13,12L7,18L5.59,16.59L10.17,12L5.59,7.41M11.59,7.41L13,6L19,12L13,18L11.59,16.59L16.17,12L11.59,7.41Z"/>
+				</svg>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="js/vendor/modernizr-3.8.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+		integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-3.4.1.min.js"><\/script>')</script>
+<script src="js/plugins.js"></script>
+<script src="js/twitch-embed.js"></script>
+<script src="js/moment.js"></script>
+<script src="js/moment-timezone.js"></script>
+<script src="js/main.js"></script>
+
+<script>
+	const utctimeField = $('#utc-time')
+	const localtimeField = $('#local-time')
+	
+	function updateTime() {
+		utctimeField[0].innerText = moment().utc().format("MMM Do, hh:mmA")
+		localtimeField[0].innerText = moment().format("MMM Do, hh:mmA")
+		setTimeout(updateTime, 500);
+	}
+	
+	updateTime()
+	
+	const streams = [
+		{
+			name: "Streamer 1", twitch: "defvs", start: new Date(Date.UTC(2020, 4, 5, 8, 0))
+		},
+		{
+			name: "Streamer 2", twitch: "tmocs", start: new Date(Date.UTC(2020, 4, 5, 12, 0))
+		},
+		{
+			name: "Streamer 3", twitch: "mystery2k", start: new Date(Date.UTC(2020, 4, 5, 16, 0))
+		},
+		{
+			name: "Streamer 4", twitch: "djtaceht", start: new Date(Date.UTC(2020, 4, 5, 20, 0))
+		},
+		{
+			name: "Streamer 5", twitch: "monstercat", start: new Date(Date.UTC(2020, 4, 5, 24, 0))
+		},
+	]
+	
+	let currentPlayingIndex = null;
+	let currentViewerIndex = 0;
+	
+	const scroller = "<div class=\"scroller\">\n" +
+		"<div class=\"title\">\n" +
+		"<span class=\"streamer-name-socials\">\n" +
+		"<span class=\"streamer-name\">n/a</span>\n" +
+		"</span>\n" +
+		"<div class=\"streamer-times\">\n" +
+		"<span>\n" +
+		"<span class=\"streamer-time-utc\">n/a</span> <i>UTC</i>\n" +
+		"</span>\n" +
+		"<span>\n" +
+		"<span class=\"streamer-time-local\">n/a</span> <i>local</i>\n" +
+		"</span>\n" +
+		"</div>\n" +
+		"</div>\n" +
+		"<div class=\"twitch-viewer\">\n" +
+		"<div id=\"twitch-embed\"></div>\n" +
+		"<div class=\"ttl-container\">\n" +
+		"<div class=\"ttl-centered\"><u>LIVE:</u><br><span class=\"ttl\">N/A</span></div>\n" +
+		"</div>\n" +
+		"</div>\n" +
+		"</div>"
+	
+	const homeScroller = "<div class=\'scroller\' id=\'scroller-home\' style=\'flex-flow: row; align-items: center; background-color: #222222;\'>\n\t<img src=\"img/poster.png\" height=\'100%\' style=\'object-fit: contain; max-width: 100%\' alt=\"Zemefest poster\">\n\t<div class=\'welcome\' style=\'flex-grow: 1; height: 100%; display: block; padding: 32px 16px; text-align: center; overflow: auto\'>\n\t\t<h1>Welcome to Zeme Fest!</h1>\n\t\t<span style=\'font-size: 2vw\'>some text, whatever you want</span>\n\t</div>\n</div>"
+	
+	let busy = false;
+	
+	function changeScroller(direction) {
+		function f(scroller) {
+			scroller.find(".streamer-name").text(streams[currentViewerIndex].name);
+			scroller.find(".streamer-time-utc").text(moment(streams[currentViewerIndex].start).utc().format("MMM Do, hh:mmA"));
+			scroller.find(".streamer-time-local").text(moment(streams[currentViewerIndex].start).format("MMM Do, hh:mmA ([GMT]Z)"));
+			if (currentViewerIndex === currentPlayingIndex) {
+				let settings;
+				
+				scroller.find("#twitch-embed").attr("id", "twitch-embed-new")
+				
+				let twitch = streams[currentViewerIndex].twitch == null ?
+					streams[currentViewerIndex].name : streams[currentViewerIndex].twitch;
+				
+				if (scroller.find("twitch-embed-new").width() < 400) {
+					settings = {
+						width: "100%",
+						height: "100%",
+						channel: twitch,
+						allowfullscreen: false,
+						theme: "dark",
+						layout: "video"
+					};
+				} else {
+					settings = {
+						width: "100%",
+						height: "100%",
+						channel: twitch,
+						allowfullscreen: false,
+						theme: "dark",
+						layout: "video-with-chat"
+					};
+				}
+				
+				new Twitch.Embed("twitch-embed-new", settings);
+				
+				scroller.find(".ttl").text("Now on air!");
+			} else {
+				scroller.find(".ttl").text(moment(streams[currentViewerIndex].start).fromNow());
+				scroller.find("#twitch-embed").attr("hidden", "")
+			}
+		}
+		
+		
+		if (direction === 0) {
+			if (currentViewerIndex === -1) {
+				currentViewerIndex = 0;
+				changeScroller(-1);
+			}
+			let scrollers = $('.scroller');
+			f(scrollers.eq(0));
+			return;
+		}
+		
+		if (busy || currentViewerIndex + direction < -1) return;
+		currentViewerIndex = currentViewerIndex + direction;
+		if (currentViewerIndex >= streams.length) {
+			currentViewerIndex = -1;
+			direction = -1;
+		}
+		
+		let scrollers;
+		if (currentViewerIndex !== -1) {
+			$('.scroller-relative').append(scroller);
+			scrollers = $('.scroller');
+			
+			f(scrollers.eq(1));
+		} else {
+			$('.scroller-relative').append(homeScroller);
+			scrollers = $('.scroller');
+		}
+		
+		busy = true;
+		scrollers.eq(1).css("left", direction > 0 ? "100%" : "-100%");
+		scrollers.eq(0).animate({left: direction > 0 ? "-100%" : "100%"}, {
+			queue: false, duration: 500,
+			complete: function () {
+				scrollers.eq(0).remove();
+				busy = false;
+			}
+		});
+		scrollers.eq(1).animate({left: 0}, {queue: false, duration: 500});
+	}
+	
+	function updateCurrentPlaying() {
+		currentPlayingIndex = -1;
+		for (let i = 0; i < streams.length; i++) {
+			if (streams[i].start.getTime() <= new Date().getTime()) {
+				if (streams.length > i + 1 && streams[i + 1].start.getTime() > new Date().getTime()) {
+					currentPlayingIndex = i
+					break;
+				}
+			}
+		}
+		setTimeout(updateCurrentPlaying, 120000);
+	}
+	
+	function updateTTL() {
+		if (currentViewerIndex !== -1) {
+			let scroller = $('.scroller').eq(0);
+			scroller.find(".ttl").text(moment(streams[currentViewerIndex].start).fromNow());
+		}
+		setTimeout(updateTTL, 30000);
+	}
+	updateTTL()
+	
+	updateCurrentPlaying();
+	currentViewerIndex = currentPlayingIndex;
+	changeScroller(0);
+</script>
+
+<!-- Google Analytics -->
+<script>
+	window.ga = function () {
+		ga.q.push(arguments)
+	};
+	ga.q = [];
+	ga.l = +new Date;
+	ga('create', 'UA-164236180-1', 'auto');
+	ga('set', 'transport', 'beacon');
+	ga('send', 'pageview')
+</script>
+<script src="https://www.google-analytics.com/analytics.js" async></script>
+
+</body>
+
+</html>
