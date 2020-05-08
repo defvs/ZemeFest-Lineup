@@ -21,10 +21,10 @@ const streams = [
 		name: "Paul Velocity", twitch: "paulvelocity", start: new Date(Date.UTC(2020, 4, 16, 6)), end: null
 	},
 	{
-		name: "Eric Skiles", twitch: "ericskiles", start: new Date(Date.UTC(2020, 4, 16, 8)), end: new Date(Date.UTC(2020, 4, 16, 10))
+		name: "Eric Skiles", twitch: "ericskiles", start: new Date(Date.UTC(2020, 4, 16, 8)), end: null
 	},
 	{
-		name: "Ampsnd", twitch: "ampsnd", start: new Date(Date.UTC(2020, 4, 16, 12)), end: new Date(Date.UTC(2020, 4, 16, 14))
+		name: "Ampsnd", twitch: "ampsnd", start: new Date(Date.UTC(2020, 4, 16, 10)), end: new Date(Date.UTC(2020, 4, 16, 12))
 	},
 	{
 		name: "DJ Fuzzy Logic", twitch: "dj_fuzzylogic", start: new Date(Date.UTC(2020, 4, 16, 16)), end: null
