@@ -14,8 +14,6 @@
 	src: url("../fonts/futura-medium-bt.ttf");
 }
 
-
-
 html body {
 	height: 100%;
 	font-family: FuturaMdBT, serif;
@@ -162,6 +160,7 @@ h1 {
 .ttl-centered u {
 	font-size: 3vmax;
 }
+
 
 
 /* ==========================================================================

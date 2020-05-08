@@ -51,6 +51,13 @@
 						<div class="title">
 						<span class="streamer-name-socials">
 							<span class="streamer-name">n/a</span>
+							<a class="streamer-twitch-link" target="_blank" href="#">
+								<svg style="height: 2.5vmax; width: 2.5vmax; position: relative; top: -0.5em; margin-left: 1em; color: #6800ff;"
+									 viewBox="0 0 24 24">
+									<path fill="currentColor"
+										  d="M11.64 5.93H13.07V10.21H11.64M15.57 5.93H17V10.21H15.57M7 2L3.43 5.57V18.43H7.71V22L11.29 18.43H14.14L20.57 12V2M19.14 11.29L16.29 14.14H13.43L10.93 16.64V14.14H7.71V3.43H19.14Z"/>
+								</svg>
+							</a>
 						</span>
 							<div class="streamer-times">
 							<span>
@@ -89,6 +96,7 @@
 <script src="js/moment-timezone.js"></script>
 <script src="js/main.js"></script>
 
+<script src="streams.js"></script>
 <script>
 	const utctimeField = $('#utc-time')
 	const localtimeField = $('#local-time')
@@ -101,31 +109,14 @@
 	
 	updateTime()
 	
-	const streams = [
-		{
-			name: "Streamer 1", twitch: "defvs", start: new Date(Date.UTC(2020, 4, 5, 8, 0))
-		},
-		{
-			name: "Streamer 2", twitch: "tmocs", start: new Date(Date.UTC(2020, 4, 5, 12, 0))
-		},
-		{
-			name: "Streamer 3", twitch: "mystery2k", start: new Date(Date.UTC(2020, 4, 5, 16, 0))
-		},
-		{
-			name: "Streamer 4", twitch: "djtaceht", start: new Date(Date.UTC(2020, 4, 5, 20, 0))
-		},
-		{
-			name: "Streamer 5", twitch: "monstercat", start: new Date(Date.UTC(2020, 4, 5, 24, 0))
-		},
-	]
-	
 	let currentPlayingIndex = null;
 	let currentViewerIndex = 0;
 	
 	const scroller = "<div class=\"scroller\">\n" +
 		"<div class=\"title\">\n" +
 		"<span class=\"streamer-name-socials\">\n" +
-		"<span class=\"streamer-name\">n/a</span>\n" +
+		"<span class=\"streamer-name\">n/a  </span>\n" +
+		"<a class=\'streamer-twitch-link\' target=\"_blank\" href=\'#\'>\n\t<svg style='height: 2.5vmax; width: 2.5vmax; position: relative; top: -0.5em; margin-left: 1em; color: #6800ff;' viewBox=\"0 0 24 24\"><path fill=\"currentColor\" d=\"M11.64 5.93H13.07V10.21H11.64M15.57 5.93H17V10.21H15.57M7 2L3.43 5.57V18.43H7.71V22L11.29 18.43H14.14L20.57 12V2M19.14 11.29L16.29 14.14H13.43L10.93 16.64V14.14H7.71V3.43H19.14Z\" /></svg>\n</a>" +
 		"</span>\n" +
 		"<div class=\"streamer-times\">\n" +
 		"<span>\n" +
@@ -144,7 +135,7 @@
 		"</div>\n" +
 		"</div>"
 	
-	const homeScroller = "<div class=\'scroller\' id=\'scroller-home\' style=\'flex-flow: row; align-items: center; background-color: #222222;\'>\n\t<img src=\"img/poster.png\" height=\'100%\' style=\'object-fit: contain; max-width: 100%\' alt=\"Zemefest poster\">\n\t<div class=\'welcome\' style=\'flex-grow: 1; height: 100%; display: block; padding: 32px 16px; text-align: center; overflow: auto\'>\n\t\t<h1>Welcome to Zeme Fest!</h1>\n\t\t<span style=\'font-size: 2vw\'>some text, whatever you want</span>\n\t</div>\n</div>"
+	const homeScroller = "<div class=\'scroller\' id=\'scroller-home\' style=\'flex-flow: row; align-items: center; background-color: #222222;\'>\n\t<div class=\'welcome\' style=\'flex-grow: 1; height: 100%; display: block; text-align: center; overflow: auto\'>\n\t\t<img src=\"img/poster.png\" height=\'100%\' style=\'object-fit: contain; max-width: 100%\' alt=\"Zemefest poster\">\n\t\t<h1>Welcome to Zeme Fest!</h1>\n\t\t<span style=\'font-size: 2vmax; padding: 0 2vmax 1vmax;\'>Zeme Festval (DJs for WWF) are fundraising for World Wildlife Fund because we want to protect the future of nature. Brought to you by True Deep Movement (TDM Collective). I have asked twitch communities to join me to help raise money to give back to the awesome planet we live on.\n<br><br>\nI’m Very Excited to have many talented djs and live performances to help raise money for the WWF (WORLD WILDLIFE FUND), with twitch committees that have very talented people to combine into a larger network to help the world become a better place. In May of 2019 WE raised 2,100 with in 3 days, Lets see if we can raid anouther 2,000 for 2020!\n<br><br>\nDeforestation, climate change, water scarcity, and illegal wildlife trade. These are some of the threats facing our planet today—and no one person or group can tackle them alone. But if we work together, we can take on anything.\n<br><br>\nWe can protect the very things that keep us alive: our forests, our oceans, our fresh water, our wildlife, our energy supply, our food supply. \n<br><br>\nThank you for giving what you can.</span>\n\t</div>\n</div>"
 	
 	let busy = false;
 	
@@ -153,6 +144,7 @@
 			scroller.find(".streamer-name").text(streams[currentViewerIndex].name);
 			scroller.find(".streamer-time-utc").text(moment(streams[currentViewerIndex].start).utc().format("MMM Do, hh:mmA"));
 			scroller.find(".streamer-time-local").text(moment(streams[currentViewerIndex].start).format("MMM Do, hh:mmA ([GMT]Z)"));
+			scroller.find(".streamer-twitch-link").attr("href", "https://twitch.tv/" + streams[currentViewerIndex].twitch)
 			if (currentViewerIndex === currentPlayingIndex) {
 				let settings;
 				
@@ -235,7 +227,9 @@
 		currentPlayingIndex = -1;
 		for (let i = 0; i < streams.length; i++) {
 			if (streams[i].start.getTime() <= new Date().getTime()) {
-				if (streams.length > i + 1 && streams[i + 1].start.getTime() > new Date().getTime()) {
+				if (streams.length > i + 1 &&
+					(streams[i].end == null ? streams[i + 1].start.getTime() : streams[i].end.getTime())
+					> new Date().getTime()) {
 					currentPlayingIndex = i
 					break;
 				}
@@ -251,6 +245,7 @@
 		}
 		setTimeout(updateTTL, 30000);
 	}
+	
 	updateTTL()
 	
 	updateCurrentPlaying();
